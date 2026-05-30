@@ -1,7 +1,7 @@
 # Programming Bitcoin - Week 6
 
 ## Overview
-This week, you'll learn about Networking and SPV mode in Bitcoin and how to implement them in Python.
+This week, you'll learn about Blocks and Networking in Bitcoin and how to implement them in Python.
 
 ## Solution Requirements
 
@@ -28,7 +28,7 @@ You need to complete the Python scripts and notebook to pass.
 
 
 ### Testing Steps
-- Run all the cells in `Chapter10.ipynb` and `Chapter11.ipynb`. If all the cells run without errors, you have successfully completed the challenge and are ready to submit your solution.
+- Run all the cells in `Chapter9.ipynb` and `Chapter10.ipynb`. If all the cells run without errors, you have successfully completed the challenge and are ready to submit your solution.
 
 ### Can’t connect to `mainnet.programmingbitcoin.com` or `testnet.programmingbitcoin.com`?
 - Those hostnames are currently unavailable. Replace them with a direct peer IP from a Bitcoin DNS seed.
