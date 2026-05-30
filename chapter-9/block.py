@@ -8,6 +8,8 @@ from helper import (
     little_endian_to_int,
 )
 
+TWO_WEEKS = 60*60*24*14
+
 
 # tag::source1[]
 class Block:
