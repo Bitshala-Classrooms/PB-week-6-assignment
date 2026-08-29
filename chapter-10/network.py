@@ -17,16 +17,16 @@ from helper import (
 
 # tag::source1[]
 NETWORK_MAGIC = b'\xf9\xbe\xb4\xd9'
-TESTNET_NETWORK_MAGIC = b'\x0b\x11\x09\x07'
+TESTNET4_NETWORK_MAGIC = b'\x1c\x16\x3f\x28'
 
 
 class NetworkEnvelope:
 
-    def __init__(self, command, payload, testnet=False):
+    def __init__(self, command, payload, testnet4=False):
         self.command = command
         self.payload = payload
-        if testnet:
-            self.magic = TESTNET_NETWORK_MAGIC
+        if testnet4:
+            self.magic = TESTNET4_NETWORK_MAGIC
         else:
             self.magic = NETWORK_MAGIC
 
@@ -38,14 +38,14 @@ class NetworkEnvelope:
     # end::source1[]
 
     @classmethod
-    def parse(cls, s, testnet=False):
+    def parse(cls, s, testnet4=False):
         '''Takes a stream and creates a NetworkEnvelope'''
         # check the network magic
         magic = s.read(4)
         if magic == b'':
             raise RuntimeError('Connection reset!')
-        if testnet:
-            expected_magic = TESTNET_NETWORK_MAGIC
+        if testnet4:
+            expected_magic = TESTNET4_NETWORK_MAGIC
         else:
             expected_magic = NETWORK_MAGIC
         if magic != expected_magic:
@@ -269,16 +269,15 @@ class HeadersMessageTest(TestCase):
 # tag::source4[]
 class SimpleNode:
 
-    def __init__(self, host, port=None, testnet=False, logging=False):
+    def __init__(self, host, port=None, testnet4=False, logging=False):
         if port is None:
-            if testnet:
-                port = 18333
+            if testnet4:
+                port = 48333
             else:
                 port = 8333
-        self.testnet = testnet
+        self.testnet4 = testnet4
         self.logging = logging
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect((host, port))
+        self.socket = socket.create_connection((host, port), timeout=10)
         self.stream = self.socket.makefile('rb', None)
     # end::source4[]
 
@@ -294,14 +293,14 @@ class SimpleNode:
     def send(self, message):  # <1>
         '''Send a message to the connected node'''
         envelope = NetworkEnvelope(
-            message.command, message.serialize(), testnet=self.testnet)
+            message.command, message.serialize(), testnet4=self.testnet4)
         if self.logging:
             print('sending: {}'.format(envelope))
         self.socket.sendall(envelope.serialize())
 
     def read(self):  # <2>
         '''Read a message from the socket'''
-        envelope = NetworkEnvelope.parse(self.stream, testnet=self.testnet)
+        envelope = NetworkEnvelope.parse(self.stream, testnet4=self.testnet4)
         if self.logging:
             print('receiving: {}'.format(envelope))
         return envelope
@@ -324,5 +323,5 @@ class SimpleNode:
 class SimpleNodeTest(TestCase):
 
     def test_handshake(self):
-        node = SimpleNode('testnet-seed.bitcoin.jonasschnelli.ch.', testnet=True)
+        node = SimpleNode('seed.testnet4.bitcoin.sprovoost.nl.', testnet4=True)
         node.handshake()
